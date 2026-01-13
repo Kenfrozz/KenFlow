@@ -12,7 +12,7 @@ Tekrarlayan mesajları otomatikleştirin, müşteri iletişiminizi hızlandırı
 [![Version](https://img.shields.io/badge/version-1.0.4-blue.svg)](https://github.com/kenflow/kenflow-app/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://github.com/kenflow/kenflow-app/releases)
 
-[İndir](https://github.com/kenfrozz/kenflow/releases) · [Özellikler](#özellikler) · [Kurulum](#kurulum) · [Kullanım](#kullanım)
+[İndir](https://github.com/kenfrozz/kenflow/releases)
 
 </div>
 
