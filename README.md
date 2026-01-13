@@ -9,8 +9,8 @@
 Tekrarlayan mesajları otomatikleştirin, müşteri iletişiminizi hızlandırın.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
-[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg)](https://github.com/kenflow/kenflow-app/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://github.com/kenflow/kenflow-app/releases)
+[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg)](https://github.com/Kenfrozz/KenFlow/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://github.com/Kenfrozz/KenFlow/releases)
 
 [İndir](https://github.com/kenfrozz/kenflow/releases)
 
@@ -33,7 +33,7 @@ Tekrarlayan mesajları otomatikleştirin, müşteri iletişiminizi hızlandırı
 
 ## 📥 İndir
 
-En son sürümü [Releases](https://github.com/kenflow/kenflow-app/releases) sayfasından indirebilirsiniz.
+En son sürümü [Releases](https://github.com/Kenfrozz/KenFlow/releases) sayfasından indirebilirsiniz.
 
 **Mevcut Sürüm:** `v1.0.4`
 
@@ -44,7 +44,7 @@ En son sürümü [Releases](https://github.com/kenflow/kenflow-app/releases) say
 
 ### Kullanıcılar
 
-1. [Releases](https://github.com/kenflow/kenflow-app/releases) sayfasından `KenFlow-Setup.exe` dosyasını indirin
+1. [Releases](https://github.com/Kenfrozz/KenFlow/releases) sayfasından `KenFlow-Setup.exe` dosyasını indirin
 2. İndirilen dosyayı çalıştırın
 3. Kurulum adımlarını takip edin
 4. Uygulamayı başlatın ve ilk mesajınızı oluşturun
@@ -53,7 +53,7 @@ En son sürümü [Releases](https://github.com/kenflow/kenflow-app/releases) say
 
 ```bash
 # Projeyi klonlayın
-git clone https://github.com/kenflow/kenflow-app.git
+git clone https://github.com/Kenfrozz/KenFlow.git
 cd kenflow-app
 
 # Bağımlılıkları yükleyin
@@ -110,7 +110,7 @@ Bu proje MIT Lisansı ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE.t
 
 Sorular, öneriler veya hata bildirimleri için:
 
-- [GitHub Issues](https://github.com/kenflow/kenflow-app/issues)
+- [GitHub Issues](https://github.com/Kenfrozz/KenFlow/issues)
 
 ---
 
