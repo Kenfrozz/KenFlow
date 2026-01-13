@@ -1,0 +1,6 @@
+flask
+flask-cors
+pyautogui
+keyboard
+pyperclip
+pygetwindow

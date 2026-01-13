@@ -1,0 +1,106 @@
+{
+  "name": "kenflow",
+  "version": "1.0.4",
+  "description": "KenFlow - İşletmeler için akıllı mesaj otomasyonu. Müşteri iletişimini hızlandırın, tekrar eden mesajları saniyeler içinde gönderin. Her seferinde farklı, insansı mesajlar oluşturun. Overlay modu ile klavyeye dokunmadan çalışın.",
+  "main": "electron/main.js",
+  "author": "KenFlow",
+  "license": "MIT",
+  "homepage": "https://kenflow.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kenflow/kenflow-app"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build:icon": "node create-icon.js",
+    "build:python": "cd python && pyinstaller --clean --noconfirm kenflow-backend.spec",
+    "build:electron": "electron-builder --win --x64",
+    "build": "npm run build:icon && npm run build:python && npm run build:electron",
+    "dist": "npm run build:icon && electron-builder --win --x64"
+  },
+  "keywords": [
+    "kenflow",
+    "mesaj-otomasyonu",
+    "message-automation",
+    "müşteri-iletişimi",
+    "customer-communication",
+    "işletme-yazılımı",
+    "business-software",
+    "text-templates",
+    "klavye-kısayolları",
+    "hotkeys",
+    "overlay",
+    "productivity",
+    "verimlilik"
+  ],
+  "build": {
+    "appId": "com.kenflow.app",
+    "productName": "KenFlow",
+    "copyright": "Copyright © 2026 KenFlow",
+    "icon": "build/icon.ico",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "python/dist/kenflow-backend.exe",
+        "to": "python/kenflow-backend.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "executableName": "KenFlow",
+      "artifactName": "${productName}-${version}-Setup.${ext}",
+      "signAndEditExecutable": false,
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-Portable.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "KenFlow",
+      "license": "LICENSE.txt",
+      "language": "1055",
+      "deleteAppDataOnUninstall": false,
+      "menuCategory": true
+    },
+    "fileAssociations": [],
+    "protocols": {
+      "name": "kenflow",
+      "schemes": ["kenflow"]
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "png-to-ico": "^3.0.1"
+  }
+}

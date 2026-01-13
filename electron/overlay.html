@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenFlow Overlay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Ana, tema değişkenleri için -->
+    <link rel="stylesheet" href="overlay.css">
+</head>
+
+<body>
+    <div class="overlay-container">
+        <div class="overlay-icon">
+            <i class="fas fa-bolt"></i>
+        </div>
+
+        <!-- Mesajlar (Sola Yaslı) -->
+        <div class="message-buttons" id="messageContainer">
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i></div>
+        </div>
+
+        <div class="overlay-divider"></div>
+
+        <!-- Mini Kontroller (Genişleyebilir Panel) -->
+        <div class="controls-wrapper">
+            <!-- Durum Göstergeleri (Her Zaman Görünür - Dikey) -->
+            <div class="status-dots" id="statusDots" title="Kontrolleri Aç/Kapat">
+                <span class="status-dot listener" id="dotListener"></span>
+                <span class="status-dot enter" id="dotEnter"></span>
+                <span class="status-dot window" id="dotWindow"></span>
+            </div>
+
+            <!-- Genişleyen Kontrol Paneli (Sağdan Açılır) -->
+            <div class="expanded-controls" id="expandedControls">
+                <button class="mini-toggle" id="ovListenerBtn" title="Dinleyici">
+                    <i class="fas fa-broadcast-tower"></i>
+                </button>
+                <button class="mini-toggle" id="ovEnterBtn" title="Enter ile Gönder">
+                    <i class="fas fa-level-down-alt fa-rotate-90"></i>
+                </button>
+                <button class="mini-toggle" id="ovWindowBtn" title="Pencere Hedefleme">
+                    <i class="fas fa-window-restore"></i>
+                    <span class="mini-badge" id="ovWindowBadge"></span>
+                </button>
+                <div class="controls-divider"></div>
+                <button class="mini-toggle" id="settingsBtn" title="Mesaj Seç">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button class="mini-toggle close-btn" id="closeOverlayBtn" title="Kapat">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Taşıma Tutamacı (En Sağda) -->
+        <div class="drag-handle-btn drag-handle" title="Taşı">
+            <i class="fas fa-grip-lines-vertical"></i>
+        </div>
+    </div>
+
+    <!-- Mesaj Seçimi artık ayrı pencerede açılıyor (selection.html) -->
+    <!-- Pencere Seçimi artık ayrı pencerede açılıyor (window-selection.html) -->
+
+    <script src="overlay.js"></script>
+</body>
+
+</html>

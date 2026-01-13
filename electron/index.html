@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KenFlow - Akıllı Mesaj Otomasyonu</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="app-container">
+    <nav class="sidebar">
+      <div class="sidebar-top">
+        <div class="app-icon"><img src="icon.png" alt="KenFlow"></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-items">
+          <button class="nav-btn active" data-tab="dashboard" title="Dashboard">
+            <i class="fas fa-chart-pie"></i>
+          </button>
+          <button class="nav-btn" data-tab="messages" title="Mesajlar">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+          <button class="nav-btn" data-tab="combinations" title="Kombinasyonlar">
+            <i class="fas fa-dna"></i>
+          </button>
+          <button class="nav-btn" data-tab="patterns" title="Kalıplar">
+            <i class="fas fa-puzzle-piece"></i>
+          </button>
+        </div>
+      </div>
+      <div class="nav-bottom">
+        <button class="sidebar-toggle-btn" id="openOverlayBtn" title="Kompakt Mod (Overlay)">
+          <i class="fas fa-bolt" id="overlayIcon"></i>
+        </button>
+        <button class="sidebar-toggle-btn" id="windowTargetBtn" title="Pencere Hedefleme: Tümü">
+          <i class="fas fa-window-restore" id="windowTargetIcon"></i>
+          <span class="window-count-badge" id="windowCountBadge"></span>
+        </button>
+        <button class="sidebar-toggle-btn" id="enterToggle" title="Enter ile Gönder: Açık">
+          <i class="fas fa-level-down-alt fa-rotate-90" id="enterIcon"></i>
+          <div class="toggle-indicator" id="enterIndicator"></div>
+        </button>
+        <button class="sidebar-toggle-btn" id="listenerToggle" title="Dinleyici Kapalı">
+          <i class="fas fa-broadcast-tower" id="listenerIcon"></i>
+          <div class="toggle-indicator" id="listenerIndicator"></div>
+        </button>
+      </div>
+    </nav>
+
+    <div class="main-wrapper">
+      <div class="title-bar">
+        <div class="title-bar-spacer"></div>
+        <div class="title-bar-center">
+          <span class="app-title">KenFlow</span>
+        </div>
+        <div class="window-controls">
+          <button class="window-btn theme-toggle" id="themeToggle" title="Tema Değiştir">
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </button>
+          <button class="window-btn minimize" id="minimizeBtn">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button class="window-btn maximize" id="maximizeBtn">
+            <i class="far fa-square"></i>
+          </button>
+          <button class="window-btn close" id="closeBtn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <main class="content">
+        <!-- DASHBOARD TAB -->
+        <section class="tab-content active" id="dashboard-tab">
+          <div class="tab-header">
+            <h1>Dashboard</h1>
+            <div class="header-actions">
+              <button class="btn-secondary" id="refreshDashboardBtn" title="Yenile">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card gradient-purple">
+              <div class="stat-icon"><i class="fas fa-comments"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="statMessages">0</span>
+                <span class="stat-label">Mesaj</span>
+              </div>
+            </div>
+
+            <div class="stat-card gradient-purple">
+              <div class="stat-icon"><i class="fas fa-dna"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="statCombinations">0</span>
+                <span class="stat-label">Kombinasyon</span>
+              </div>
+            </div>
+            <div class="stat-card gradient-teal">
+              <div class="stat-icon"><i class="fas fa-shapes"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="statPatterns">0</span>
+                <span class="stat-label">Kalıp</span>
+              </div>
+            </div>
+            <div class="stat-card gradient-orange">
+              <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+              <div class="stat-info">
+                <span class="stat-value" id="statTodaySent">0</span>
+                <span class="stat-label">Bugün Gönderilen</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Dashboard Grid -->
+          <div class="dashboard-grid">
+            <!-- Left Column - Activity Chart -->
+            <div class="dashboard-column">
+              <div class="dashboard-card">
+                <div class="card-header">
+                  <h3><i class="fas fa-chart-bar"></i> İstatistikler <span class="header-badge"><span
+                        id="chartTotal">0</span> mesaj</span></h3>
+                  <div class="period-selector">
+                    <button class="period-btn" data-period="1">Bugün</button>
+                    <button class="period-btn active" data-period="7">7 Gün</button>
+                    <button class="period-btn" data-period="30">1 Ay</button>
+                    <button class="period-btn" data-period="90">3 Ay</button>
+                    <button class="period-btn" data-period="365">1 Yıl</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container" id="weeklyChart"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column - Activity Log -->
+            <div class="dashboard-column">
+              <div class="dashboard-card">
+                <div class="card-header">
+                  <h3><i class="fas fa-history"></i> Son Aktiviteler</h3>
+                </div>
+                <div class="card-body">
+                  <div class="activity-list" id="activityList">
+                    <div class="empty-activity"><i class="fas fa-inbox"></i><span>Henüz aktivite yok</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MESSAGES TAB -->
+        <section class="tab-content" id="messages-tab">
+          <div class="tab-header">
+            <h1>Mesajlar</h1>
+            <div class="header-actions">
+              <div class="search-box">
+                <i class="fas fa-search"></i><input type="text" id="messageSearch" placeholder="Ara..." />
+              </div>
+              <button class="btn-primary" id="addMessageBtn">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="messagesTable">
+              <thead>
+                <tr>
+                  <th>Ad</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="messagesBody"></tbody>
+            </table>
+            <div class="empty-state" id="messagesEmpty">
+              <i class="fas fa-inbox"></i>
+              <p>Henüz mesaj eklenmemiş</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- COMBINATIONS TAB -->
+        <section class="tab-content" id="combinations-tab">
+          <div class="tab-header">
+            <h1>Kombinasyonlar</h1>
+            <div class="header-actions">
+              <button class="btn-primary" id="addCombinationBtn">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table class="data-table" id="combinationsTable">
+              <thead>
+                <tr>
+                  <th>Ad</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="combinationsBody"></tbody>
+            </table>
+            <div class="empty-state" id="combinationsEmpty">
+              <i class="fas fa-layer-group"></i>
+              <p>Henüz kombinasyon eklenmemiş</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-content" id="patterns-tab">
+          <div class="tab-header">
+            <h1>Kalıplar</h1>
+            <div class="header-actions">
+              <button class="btn-primary" id="addPatternBtn">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="patterns-grid" id="patternsGrid"></div>
+          <div class="empty-state" id="patternsEmpty">
+            <i class="fas fa-shapes"></i>
+            <p>Henüz kalıp eklenmemiş</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal" id="messageModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="messageModalTitle">Yeni Mesaj</h2>
+        <button class="modal-close" id="closeMessageModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Mesaj Adı</label><input type="text" id="messageName" placeholder="Mesaj adı..." />
+        </div>
+        <div class="form-group">
+          <label>Tetik Tuşu</label>
+          <div class="trigger-key-box" id="triggerKeyBox">
+            <div class="trigger-key-display" id="triggerKeyDisplay">
+              <i class="fas fa-keyboard"></i>
+              <span id="triggerKeyText">Tıklayın ve bir tuşa basın...</span>
+            </div>
+            <button class="trigger-key-clear" id="triggerClearBtn" title="Temizle">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <input type="hidden" id="triggerKey" />
+          <div class="trigger-key-warning" id="triggerKeyWarning"></div>
+          <small>Kutuya tıklayıp bir tuşa basın</small>
+        </div>
+        <div class="form-group">
+          <label>İkon (Opsiyonel)</label>
+          <div class="icon-input-box">
+            <div class="icon-preview"><i class="fas fa-bolt" id="messageIconPreview"></i></div>
+            <input type="text" id="messageIcon" placeholder="Örn: fas fa-save" />
+          </div>
+          <small>FontAwesome sınıfı girin (örn: 'fas fa-heart'). Boş bırakılırsa isim görünür.</small>
+        </div>
+        <div class="form-group">
+          <label>Templateler</label>
+          <div id="templatesContainer"></div>
+          <button class="btn-secondary" id="addTemplateBtn">
+            <i class="fas fa-plus"></i> Template Ekle
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelMessageBtn">İptal</button><button class="btn-primary"
+          id="saveMessageBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="patternModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="patternModalTitle">Yeni Kalıp</h2>
+        <button class="modal-close" id="closePatternModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Kalıp Adı</label><input type="text" id="patternName" placeholder="Örn: emoji" /><small>Kullanım: {<span
+              id="patternNamePreview">kalip</span>}</small>
+        </div>
+        <div class="form-group">
+          <label>Değerler</label>
+          <div id="patternItemsContainer"></div>
+          <button class="btn-secondary" id="addPatternItemBtn">
+            <i class="fas fa-plus"></i> Değer Ekle
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelPatternBtn">İptal</button><button class="btn-primary"
+          id="savePatternBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="combinationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="combinationModalTitle">Yeni Kombinasyon</h2>
+        <button class="modal-close" id="closeCombinationModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Kombinasyon Adı</label>
+          <input type="text" id="combinationName" placeholder="Kombinasyon adı..." />
+        </div>
+        <div class="form-group">
+          <label>Tetik Tuşu</label>
+          <div class="trigger-key-box" id="combinationTriggerKeyBox">
+            <div class="trigger-key-display" id="combinationTriggerKeyDisplay">
+              <i class="fas fa-keyboard"></i>
+              <span id="combinationTriggerKeyText">Tıklayın ve bir tuşa basın...</span>
+            </div>
+            <button class="trigger-key-clear" id="combinationTriggerClearBtn" title="Temizle">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <input type="hidden" id="combinationTriggerKey" />
+          <div class="trigger-key-warning" id="combinationTriggerKeyWarning"></div>
+          <small>Kutuya tıklayıp bir tuşa basın</small>
+        </div>
+        <div class="form-group">
+          <label>İkon (Opsiyonel)</label>
+          <div class="icon-input-box">
+            <div class="icon-preview"><i class="fas fa-layer-group" id="combinationIconPreview"></i></div>
+            <input type="text" id="combinationIcon" placeholder="Örn: fas fa-layer-group" />
+          </div>
+          <small>FontAwesome sınıfı girin (örn: 'fas fa-star'). Boş bırakılırsa isim görünür.</small>
+        </div>
+        <div class="form-group">
+          <label>Mesajlar Arası Gecikme (ms)</label>
+          <input type="number" id="combinationDelay" value="500" min="100" max="5000" step="100" />
+          <small>Mesajlar arasında beklenecek süre (milisaniye)</small>
+        </div>
+        <div class="form-group">
+          <label>Mesajlar (Sıralı)</label>
+          <div class="combination-messages-container" id="combinationMessagesContainer">
+            <div class="combination-empty">
+              <i class="fas fa-inbox"></i>
+              <span>Mesaj eklemek için aşağıdaki butonu kullanın</span>
+            </div>
+          </div>
+          <button class="btn-secondary" id="addCombinationMessageBtn">
+            <i class="fas fa-plus"></i> Mesaj Ekle
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelCombinationBtn">İptal</button>
+        <button class="btn-primary" id="saveCombinationBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="windowModal">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h2>Pencere Hedefleme</h2>
+        <button class="modal-close" id="closeWindowModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="window-option">
+          <label class="checkbox-label">
+            <input type="checkbox" id="allWindowsCheckbox" />
+            <span class="checkmark"></span>
+            <span>Tüm pencerelerde çalış</span>
+          </label>
+        </div>
+        <div class="window-list-header">
+          <span>Hedef Pencereler</span>
+          <button class="btn-icon-sm" id="refreshWindowsBtn" title="Yenile">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="window-list" id="windowList">
+          <div class="window-list-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Pencereler yükleniyor...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelWindowBtn">İptal</button>
+        <button class="btn-primary" id="saveWindowBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="renderer.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,666 @@
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a24;
+  --bg-card: #16161f;
+  --border-color: #2a2a3a;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --radius-sm: 6px;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e8e8ec;
+  --bg-card: #ffffff;
+  --border-color: #d1d1d6;
+  --text-primary: #1a1a1f;
+  --text-secondary: #6b6b75;
+  --text-muted: #9b9ba5;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 4px;
+  user-select: none;
+}
+
+.overlay-container {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 8px 12px;
+  gap: 10px;
+  transition: all 0.2s ease;
+  position: relative;
+  -webkit-app-region: drag;
+}
+
+/* Tüm butonlar ve etkileşimli alanlar no-drag olmalı */
+button,
+.mini-toggle,
+.control-btn,
+.message-btn,
+.mini-controls {
+  -webkit-app-region: no-drag;
+}
+
+.drag-handle-btn {
+  width: 20px;
+  height: 28px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  -webkit-app-region: drag;
+  margin-left: 4px;
+  flex-shrink: 0;
+  align-self: center;
+  /* Her zaman görünür */
+}
+
+.drag-handle-btn:hover {
+  color: var(--text-secondary);
+}
+
+.drag-handle-btn:active {
+  cursor: grabbing;
+}
+
+/* ==================== YENİ KONTROL SİSTEMİ ==================== */
+
+/* Kontrol Wrapper - Status dots ve expanded controls'u içerir */
+.controls-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  -webkit-app-region: no-drag;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Status Dots - Her zaman görünür durum göstergeleri (DİKEY) */
+.status-dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.status-dots:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4b5563;
+  transition: all 0.2s ease;
+}
+
+.status-dot.active {
+  background: var(--success, #22c55e);
+  box-shadow: 0 0 4px var(--success, #22c55e);
+}
+
+.status-dot.window.active {
+  background: var(--accent-primary, #6366f1);
+  box-shadow: 0 0 4px var(--accent-primary, #6366f1);
+}
+
+/* Genişleyen Kontrol Paneli - Varsayılan gizli, SAĞDAN açılır */
+.expanded-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: none;
+  -webkit-app-region: no-drag;
+}
+
+/* Hover ile açılma - status-dots veya wrapper üzerine gelindiğinde */
+.controls-wrapper:hover .expanded-controls,
+.controls-wrapper.expanded .expanded-controls {
+  max-width: 220px;
+  opacity: 1;
+  padding-left: 6px;
+}
+
+/* Kontroller arası ayırıcı */
+.controls-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-color);
+  opacity: 0.5;
+  margin: 0 2px;
+}
+
+/* Kapat butonu kırmızı */
+.mini-toggle.close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger, #ef4444);
+}
+
+/* Eski mini-controls ve overlay-controls'u gizle */
+.mini-controls,
+.overlay-controls {
+  display: none;
+}
+
+.mini-toggle {
+  width: 32px;
+  /* Overlay için biraz daha küçük olabilir */
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  /* Sidebar radius */
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.mini-toggle:hover {
+  background: var(--bg-card, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+}
+
+/* ACTIVE State (Yeşil) */
+.mini-toggle.active {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--success, #22c55e);
+}
+
+.mini-toggle.active:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+
+/* INDICATOR (Kırmızı/Yeşil Nokta) */
+.mini-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: var(--danger, #ef4444);
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 4px var(--danger, #ef4444);
+  transition: all 0.2s;
+}
+
+.mini-toggle.active .mini-indicator {
+  background: var(--success, #22c55e);
+  box-shadow: 0 0 6px var(--success, #22c55e);
+  /* Glow animasyonu overlay.css'de tanımlı değilse eklemiyorum, sade olsun */
+}
+
+/* WINDOW BADGE (Mor Sayı) */
+.mini-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 4px;
+  font-size: 9px;
+  font-weight: 600;
+  background: var(--accent-primary, #6366f1);
+  color: white;
+  border-radius: 7px;
+  display: none;
+  /* JS ile show */
+  align-items: center;
+  justify-content: center;
+}
+
+/* WINDOW BUTTON ACTIVE (Mor) - Sidebar'daki .targeted sınıfı gibi */
+.mini-toggle#ovWindowBtn.active {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent-primary, #6366f1);
+}
+
+.mini-toggle#ovWindowBtn.active:hover {
+  background: rgba(99, 102, 241, 0.25);
+}
+
+/* Mesaj Butonları */
+.message-buttons {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  gap: 8px;
+}
+
+.message-btn {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.message-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.message-btn:active {
+  transform: translateY(0);
+}
+
+.overlay-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-color);
+  opacity: 0.5;
+  flex-shrink: 0;
+  align-self: center;
+  /* Her zaman görünür */
+}
+
+/* Sağ Kontroller - varsayılan gizli */
+.overlay-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  -webkit-app-region: no-drag;
+  flex-shrink: 0;
+  align-self: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.control-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.control-btn:hover {
+  color: var(--accent-color);
+  background: var(--bg-hover);
+}
+
+.control-btn#closeOverlayBtn:hover {
+  color: #ef4444;
+  /* Close kırmızı */
+}
+
+.loading-spinner {
+  padding: 0 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.message-btn {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Kombinasyon butonları için özel stil */
+.message-btn.combination-btn {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.message-btn.combination-btn:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+  border-color: var(--accent-secondary);
+}
+
+/* Modal Stilleri (Aynı kalabilir, renkler değişkenlerden) */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-start;
+  /* Yukarıda başla */
+  -webkit-app-region: no-drag;
+  padding: 20px;
+  padding-top: 10px;
+  /* Üstten az boşluk */
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 16px;
+  width: 100%;
+  max-width: 320px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-content h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.selection-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  padding-right: 4px;
+}
+
+.selection-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--bg-primary);
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.selection-item:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.selection-item.selected {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.save-btn {
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+}
+
+/* Ana Penceredeki Trigger Key Badge */
+.key-badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-family: monospace;
+  margin-right: 6px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.message-btn:hover .key-badge {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* Modal İçi Sıralama Alanı */
+.selection-section-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 10px 0 6px 0;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.sortable-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.sortable-item:hover {
+  border-color: var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.sortable-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.sort-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+
+.sort-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sort-btn.remove:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.sort-btn.add {
+  width: auto;
+  padding: 0 10px;
+  color: var(--accent-secondary);
+  font-weight: 500;
+  gap: 4px;
+}
+
+.sort-btn.add:hover {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-primary);
+}
+
+/* Available Listesi biraz daha sönük olsun */
+.available-item .key-badge {
+  opacity: 0.7;
+}
+
+/* Drag & Drop Stilleri */
+.sortable-item[draggable="true"] {
+  cursor: grab;
+  user-select: none;
+}
+
+.sortable-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.sortable-item.dragging {
+  opacity: 0.5;
+  background: var(--bg-tertiary);
+  border: 1px dashed var(--accent-primary);
+}
+
+.sortable-item.drag-over {
+  border-top: 2px solid var(--accent-primary);
+  transform: translateY(2px);
+}
+
+.overlay-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  font-size: 14px;
+  margin-right: 2px;
+  filter: drop-shadow(0 0 3px rgba(99, 102, 241, 0.4));
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  align-self: center;
+  /* Her zaman görünür */
+}
+
+/* ==================== ICON ONLY BUTTONS ==================== */
+.message-btn.icon-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 8px;
+  /* Biraz daha karemsi */
+}
+
+.message-btn.icon-btn i {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Kombinasyon ikon butonu biraz farklı olabilir */
+.message-btn.combination-btn.icon-btn i {
+  color: var(--accent-secondary);
+}
+
+/* ==================== BUTTON ANIMATIONS ==================== */
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: var(--success);
+    color: var(--success);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.success-pulse {
+  animation: successPulse 0.4s ease;
+}
+
+@keyframes comboPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+    background-color: rgba(139, 92, 246, 0.2);
+    border-color: var(--accent-secondary);
+    color: var(--accent-secondary);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.combo-pulse {
+  animation: comboPulse 0.6s ease;
+}

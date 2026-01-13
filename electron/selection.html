@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesaj Seçimi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ==================== SELECTION WINDOW STYLES ==================== */
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        /* Title Bar */
+        .window-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 12px;
+            height: 38px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            -webkit-app-region: drag;
+            position: relative;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .window-controls {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .window-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--accent-gradient);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .window-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .window-controls button {
+            -webkit-app-region: no-drag;
+        }
+
+        .window-btn {
+            width: 28px;
+            height: 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .window-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .window-btn.close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Section Title */
+        .section-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        .section-count {
+            background: var(--accent-gradient);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Scrollable List */
+        .selection-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .selection-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .selection-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .selection-list::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .selection-list::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* List Divider */
+        .list-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0 12px;
+        }
+
+        .list-divider::before,
+        .list-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .list-divider span {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Message Items */
+        .message-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .message-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(2px);
+        }
+
+        .message-item.selected {
+            background: rgba(99, 102, 241, 0.06);
+            border-color: rgba(99, 102, 241, 0.3);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .message-item.dragging {
+            opacity: 0.5;
+            border-style: dashed;
+        }
+
+        .message-item.drag-over {
+            border-top: 2px solid var(--accent-primary);
+            margin-top: -2px;
+        }
+
+        .message-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .drag-handle {
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: grab;
+            padding: 4px;
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .message-item:hover .drag-handle {
+            opacity: 1;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .message-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 22px;
+            padding: 0 6px;
+            font-size: 10px;
+            font-weight: 600;
+            font-family: 'Inter', monospace;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border-color);
+            border-bottom-width: 2px;
+            border-radius: 4px;
+        }
+
+        .message-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-action {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .message-action.add:hover {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .message-action.remove:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+        }
+
+        /* Footer */
+        .window-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .loading i {
+            font-size: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-item {
+            animation: fadeIn 0.2s ease forwards;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Title Bar -->
+    <div class="window-header">
+        <div class="header-center">
+            <div class="window-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <span class="window-title">Mesaj Seçimi</span>
+        </div>
+        <div class="window-controls">
+            <button class="window-btn close" id="closeBtn" title="Kapat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="section-header">
+            <div class="section-title">
+                <i class="fas fa-layer-group"></i>
+                <span>Overlay'da Görünecekler</span>
+                <span class="section-count" id="selectedCount">0</span>
+            </div>
+        </div>
+
+        <div class="selection-list" id="selectionList">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="window-footer">
+        <button class="btn-save" id="saveBtn">
+            <i class="fas fa-check"></i>
+            Kaydet ve Kapat
+        </button>
+    </div>
+
+    <script src="selection.js"></script>
+</body>
+
+</html>
