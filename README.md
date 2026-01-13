@@ -1,10 +1,8 @@
-<div align="center">
-
-<img src="KenFlow.png" alt="KenFlow Logo"/>
-
 # KenFlow
 
-**Akıllı Mesaj Otomasyonu için Masaüstü Uygulaması**
+![KenFlow Logo](KenFlow.png)
+
+Akıllı Mesaj Otomasyonu için Masaüstü Uygulaması
 
 Tekrarlayan mesajları otomatikleştirin, müşteri iletişiminizi hızlandırın.
 
@@ -13,8 +11,6 @@ Tekrarlayan mesajları otomatikleştirin, müşteri iletişiminizi hızlandırı
 [![Platform](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://github.com/Kenfrozz/KenFlow/releases)
 
 [İndir](https://github.com/kenfrozz/kenflow/releases)
-
-</div>
 
 ---
 
@@ -82,7 +78,7 @@ npm start
 
 Mesajlarınızda dinamik içerik için kalıplar kullanın:
 
-```
+```text
 Merhaba! Siparişiniz {durum} {emoji}
 ```
 
@@ -114,8 +110,4 @@ Sorular, öneriler veya hata bildirimleri için:
 
 ---
 
-<div align="center">
-
 **KenFlow** © 2026 | Made with 💜 for businesses
-
-</div>
