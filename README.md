@@ -110,4 +110,4 @@ Sorular, öneriler veya hata bildirimleri için:
 
 ---
 
-**KenFlow** © 2026 | Made with 💜 for businesses
+**Kenfroz** © 2026 | Made with 💜 for businesses
